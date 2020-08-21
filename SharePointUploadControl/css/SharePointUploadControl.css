@@ -1,0 +1,15 @@
+.DynamicConsulting  div {
+	width: 100%;
+}
+
+.DynamicConsulting  input{
+	width: 98%;
+	float:none;
+}
+
+.DynamicConsulting label{
+	float:none;
+	width: 98%;
+	color: rgb(191, 9, 0);
+	font-weight: bold;
+}
