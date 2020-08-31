@@ -41,9 +41,12 @@ export class SharePointUploadControl extends React.Component<SharePointUploadCon
   }
 
   render(): JSX.Element {
-    const { droppedFiles, isLoading, currentFile, isEnabled, onFileDropped, onInParametersChanged } = this.vm;
-    return this.state.hasError ? (
-      <>Error</>
+    const { droppedFiles, isLoading, currentFile, isEnabled, onFileDropped } = this.vm;
+    return this.state.hasError || !isEnabled ? (
+      <Stack>
+        <Icon iconName="ErrorBadge" className={iconClass} />
+        <p>Please save record to enable control.</p>
+      </Stack>
     ) : (
       <ServiceProviderContext.Provider value={this.props.serviceProvider}>
         <Stack>

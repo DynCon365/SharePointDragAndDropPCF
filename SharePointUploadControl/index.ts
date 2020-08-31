@@ -28,6 +28,7 @@ export class SharePointAttachmentUploadControl extends StandardControlReact<IInp
           primaryEntityFieldLogicalName: this.context.parameters.primaryEntityFieldLogicalName.raw ?? "",
           relationshipLogicalName: this.context.parameters.relationshipLogicalName.raw ?? undefined,
           parentEntityTypeName: this.context.parameters.parentEntityTypeName.raw ?? undefined,
+          parentEntityFieldLogicalName: this.context.parameters.parentEntityPrimaryFieldName.raw ?? ""
         }),
       );
       serviceProvider.register(

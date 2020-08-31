@@ -11,6 +11,7 @@ export class CdsService {
     useRelationship: boolean;
     primaryEntityFieldLogicalName: string;
     parentEntityTypeName: string | undefined;
+    parentEntityFieldLogicalName: string;
     relationshipLogicalName: string | undefined;
     sharePointSiteId: string;
   };
@@ -20,6 +21,7 @@ export class CdsService {
       entityName: string;
       entityId: string;
       parentEntityTypeName: string | undefined;
+      parentEntityFieldLogicalName: string;
       primaryEntityFieldLogicalName: string;
       useRelationship: boolean;
       sharePointSiteId: string;

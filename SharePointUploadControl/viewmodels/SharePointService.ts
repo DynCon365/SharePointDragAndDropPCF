@@ -86,7 +86,6 @@ export class SharePointService {
 
   async sharepointFolderExists(folderName: string): Promise<boolean> {
     try {
-      debugger;
       const folderExists = await this.web.getFolderByServerRelativePath(folderName)();
       return true;
     } catch {
@@ -97,7 +96,6 @@ export class SharePointService {
 
   async createSharePointFolder(folderName: string, newFolder: string): Promise<void> {
     try {
-      debugger;
       const folder = await this.web.getFolderByServerRelativePath(folderName).folders.add(newFolder);
     } catch (e) {
       console.log(e);

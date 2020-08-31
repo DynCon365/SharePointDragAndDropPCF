@@ -8,6 +8,7 @@ import { decorate, observable, action } from "mobx";
 import { CdsService } from "./CdsService";
 import { SharePointService } from "./SharePointService";
 import { containsInvalidFileFolderChars } from "@pnp/sp";
+import { SaveEventArgs } from "../components/pcf-react/SaveEventArgs";
 
 export class SharePointUploadControlVM {
   serviceProvider: ServiceProvider;
@@ -27,20 +28,37 @@ export class SharePointUploadControlVM {
     this.controlContext = serviceProvider.get<ControlContextService>(ControlContextService.serviceProviderName);
     this.controlContext.onLoadEvent.subscribe(this.onLoad);
     this.controlContext.onParametersChangedEvent.subscribe(this.onInParametersChanged);
+    this.controlContext.onSaveEvent.subscribe(this.onSave);
   }
 
   async onLoad(): Promise<void> {
-    console.log("onLoad");
     this.isLoading = true;
     this.isEnabled = true;
-    this.cdsService = this.serviceProvider.get<CdsService>("CdsService");
-    this.sharePointService = this.serviceProvider.get<SharePointService>("SharePointService");
-    await this.getCdsRecords();
     this.droppedFiles = 0;
+    this.cdsService = this.serviceProvider.get<CdsService>("CdsService");
+    if (this.cdsService.config.entityId) {
+      this.sharePointService = this.serviceProvider.get<SharePointService>("SharePointService");
+      await this.getCdsRecords();
+    } else {
+      this.isEnabled = false;
+      this.isLoading = false;
+    }
   }
 
   onInParametersChanged(context: ControlContextService, args: ParametersChangedEventArgs): void {
     console.log("onInParametersChanged");
+  }
+
+  async onSave(serviceContext: ControlContextService, saveArgs: SaveEventArgs): Promise<void> {
+    this.isEnabled = true;
+    this.isLoading = true;
+    if (!this.cdsService.config.entityId) {
+      this.cdsService.config.entityId = saveArgs.primaryId.id;
+      this.cdsService.config.entityName = saveArgs.primaryId.entityType;
+      this.sharePointService = this.serviceProvider.get<SharePointService>("SharePointService");
+      await this.getCdsRecords();
+    }
+    this.isLoading = false;
   }
 
   async getCdsRecords(): Promise<void> {
@@ -59,6 +77,7 @@ export class SharePointUploadControlVM {
 
   async onFileDropped(acceptedFiles: any, fileRejections: any, event: any): Promise<void> {
     let sharePointFolderName = "";
+    this.droppedFiles = acceptedFiles.length;
     const sharePointStructureEntity = this.cdsService.sharepointSite["folderstructureentity"];
     const primaryEntityFolderUrl =
       this.getSharePointFolderName(
@@ -93,8 +112,9 @@ export class SharePointUploadControlVM {
         this.cdsService.config.relationshipLogicalName
       ) {
         console.log("Using SharePoint Type: 2");
+        debugger;
         const parentEntityFolderUrl = this.getSharePointFolderName(
-          this.cdsService.parentEntity[this.cdsService.config.relationshipLogicalName] +
+          this.cdsService.parentEntity[this.cdsService.config.parentEntityFieldLogicalName] +
             "_" +
             this.cdsService.parentEntity[sharePointStructureEntity + "id"].replace(/-/g, "").toUpperCase(),
         );
@@ -152,10 +172,9 @@ export class SharePointUploadControlVM {
       }
     }
 
-    this.droppedFiles = acceptedFiles.length;
     for (let i = 0; i < acceptedFiles.length; i++) {
       const file = acceptedFiles[i] as any;
-      debugger;
+      this.currentFile = i + 1;
       if (file.size <= 10485760) {
         await this.sharePointService.web
           .getFolderByServerRelativeUrl(sharePointFolderName)
@@ -171,6 +190,7 @@ export class SharePointUploadControlVM {
         );
       }
     }
+    this.currentFile = 0;
     this.droppedFiles = 0;
   }
 
@@ -188,6 +208,7 @@ decorate(SharePointUploadControlVM, {
   filesProcessed: observable,
   isProcessingFiles: observable,
   onLoad: action.bound,
+  onSave: action.bound,
   onInParametersChanged: action.bound,
   onFileDropped: action.bound,
 });
