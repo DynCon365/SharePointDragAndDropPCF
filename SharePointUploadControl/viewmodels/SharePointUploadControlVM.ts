@@ -154,22 +154,22 @@ export class SharePointUploadControlVM {
 
     this.droppedFiles = acceptedFiles.length;
     for (let i = 0; i < acceptedFiles.length; i++) {
-      // const file = acceptedFiles[i] as any;
-      // debugger;
-      // if (file.size <= 10485760) {
-      //   await this.sharePointService.web
-      //     .getFolderByServerRelativeUrl(sharePointFolderName)
-      //     .files.add(file.name, file, true);
-      // } else {
-      //   await this.sharePointService.web.getFolderByServerRelativeUrl(sharePointFolderName).files.addChunked(
-      //     file.name,
-      //     file,
-      //     (data: any) => {
-      //       console.log(data);
-      //     },
-      //     true,
-      //   );
-      // }
+      const file = acceptedFiles[i] as any;
+      debugger;
+      if (file.size <= 10485760) {
+        await this.sharePointService.web
+          .getFolderByServerRelativeUrl(sharePointFolderName)
+          .files.add(file.name, file, true);
+      } else {
+        await this.sharePointService.web.getFolderByServerRelativeUrl(sharePointFolderName).files.addChunked(
+          file.name,
+          file,
+          (data: any) => {
+            console.log(data);
+          },
+          true,
+        );
+      }
     }
     this.droppedFiles = 0;
   }
