@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <manifest>
-  <control namespace="DynamicConsulting" constructor="SharePointUploadControl" version="1.0.3" display-name-key="SharePointUploadControl" description-key="A control to drag and drop files and upload to the entity SharePoint library folder." control-type="standard">
+  <control namespace="DynamicConsulting" constructor="SharePointAttachmentUploadControl" version="2.0.1" display-name-key="SharePointUploadControl" description-key="A control to drag and drop files and upload to the entity SharePoint library folder." control-type="standard" preview-image="img/preview.png">
     <!-- property node identifies a specific, configurable piece of data that the control expects from CDS -->   
     <type-group name="fieldTypes">
       <type>SingleLine.Text</type>
@@ -14,28 +14,22 @@
       <type>Decimal</type>
     </type-group>
     <property name="boundEntityField" display-name-key="boundEntityField" description-key="Any field to bind this control." of-type-group="fieldTypes" usage="bound" required="true" />
-    <property name="controlClientId" display-name-key="ClientId" description-key="The AzureAD Client Id of the control." of-type="SingleLine.Text" usage="input" required="true" />
+    <property name="clientId" display-name-key="ClientId" description-key="The AzureAD Client Id of the control." of-type="SingleLine.Text" usage="input" required="true" />
     <property name="sharePointSiteGuid" display-name-key="SharePointSiteGuid" description-key="The id of the SharePoint Site to send files to." of-type="SingleLine.Text" usage="input" required="true"/>
     <property name="useRelationship" display-name-key="UseRelationship" description-key="This entity stores SharePoint documents based on SharePoint entity structure (Account/Contact)." of-type="Enum" usage="input" required="true">
       <value name="true" display-name-key="True" description-key="true">true</value>
       <value name="false" display-name-key="False" description-key="false">false</value>
     </property>    
-    <property name="entityPrimaryFieldLogicalName" display-name-key="EntityPrimaryFieldLogicalName" description-key="The logical name of the primary field of this entity (i.e. name)." of-type="SingleLine.Text" usage="input" required="true"/> 
-    <property name="relationshipFieldLogicalName" display-name-key="RelationshipFieldLogicalName" description-key="The logical name of the relationship to use for the SharePoint entity structure." of-type="SingleLine.Text" usage="input" required="false"/>
-    <property name="relathioshipPrimaryFieldLogicalName" display-name-key="RelathioshipPrimaryFieldLogicalName" description-key="The logical name of the primary field of the parent entity. Note: Should be name" of-type="SingleLine.Text" usage="input" required="false" />
+    <property name="primaryEntityFieldLogicalName" display-name-key="PrimaryEntityFieldLogicalName" description-key="The logical name of the primary field of this entity (i.e. name)." of-type="SingleLine.Text" usage="input" required="true"/> 
+    <property name="relationshipLogicalName" display-name-key="RelationshipLogicalName" description-key="The logical name of the relationship to use for the SharePoint entity structure. Ex. parentaccountid." of-type="SingleLine.Text" usage="input" required="false"/>
+    <property name="parentEntityTypeName" display-name-key="ParentEntityTypeName" description-key="The logical name of the parent enitty. Note: should be account or conact and match sharepoint entity structure." of-type="SingleLine.Text" usage="input" required="false"/>
+    <property name="parentEntityPrimaryFieldName" display-name-key="ParentEntityPrimaryFieldName" description-key="The logical name of the primary field of the parent entity. Note: Should be: name" of-type="SingleLine.Text" usage="input" required="false" />
     <resources>
       <code path="index.ts" order="1"/>      
-      <css path="css/SharePointUploadControl.css" order="1" />            
-    </resources>
-   
+      <css path="css/SharePointUploadControl.css" order="1" />  
+      <resx path="strings/SharePointUploadControl.1033.resx" version="1.0.0" />          
+    </resources>   
     <feature-usage>
-      <!-- <uses-feature name="Device.captureAudio" required="true" />
-      <uses-feature name="Device.captureImage" required="true" />
-      <uses-feature name="Device.captureVideo" required="true" />
-      <uses-feature name="Device.getBarcodeValue" required="true" />
-      <uses-feature name="Device.getCurrentPosition" required="true" />
-      <uses-feature name="Device.pickFile" required="true" /> 
-      <uses-feature name="Utility" required="true" />-->
       <uses-feature name="WebAPI" required="true" />
     </feature-usage>
   </control>

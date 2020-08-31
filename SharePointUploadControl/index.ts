@@ -1,75 +1,54 @@
-/* eslint-disable @typescript-eslint/no-empty-function */
+/* eslint-disable @typescript-eslint/ban-ts-ignore */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { StandardControlReact } from "./components/pcf-react/StandardControlReact";
 import { IInputs, IOutputs } from "./generated/ManifestTypes";
+import { SharePointUploadControl } from "./components/SharePointUploadControl";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import { ISharePointUploadProperties, SharePointAttachmentUploadControl } from "./SharePointAttachmentUpload";
+import { SharePointUploadControlVM } from "./viewmodels/SharePointUploadControlVM";
+import { CdsService } from "./viewmodels/CdsService";
+import { initializeIcons } from "@uifabric/icons";
+import { SharePointService } from "./viewmodels/SharePointService";
+initializeIcons();
 
-export class SharePointUploadControl implements ComponentFramework.StandardControl<IInputs, IOutputs> {
-  private container: HTMLDivElement;
-  private context: ComponentFramework.Context<IInputs>;
-  private uploadProps: ISharePointUploadProperties;
-  private notifyOutputChanged: () => void;
-
-  constructor() {}
-
-  /**
-   * Used to initialize the control instance. Controls can kick off remote server calls and other initialization actions here.
-   * Data-set values are not initialized here, use updateView.
-   * @param context The entire property bag available to control via Context Object; It contains values as set up by the customizer mapped to property names defined in the manifest, as well as utility functions.
-   * @param notifyOutputChanged A callback method to alert the framework that the control has new outputs ready to be retrieved asynchronously.
-   * @param state A piece of data that persists in one session for a single user. Can be set at any point in a controls life cycle by calling 'setControlState' in the Mode interface.
-   * @param container If a control is marked control-type='standard', it will receive an empty div element within which it can render its content.
-   */
-  public init(
-    context: ComponentFramework.Context<IInputs>,
-    notifyOutputChanged: () => void,
-    state: ComponentFramework.Dictionary,
-    container: HTMLDivElement,
-  ): void {
-    this.context = context;
-    this.container = container;
-    this.notifyOutputChanged = notifyOutputChanged;
-    this.renderControl(this.context);
-  }
-
-  /**
-   * Called when any value in the property bag has changed. This includes field values, data-sets, global values such as container height and width, offline status, control metadata values such as label, visible, etc.
-   * @param context The entire property bag available to control via Context Object; It contains values as set up by the customizer mapped to names defined in the manifest, as well as utility functions
-   */
-  public updateView(context: ComponentFramework.Context<IInputs>): void {
-    this.renderControl(context);
-  }
-
-  private renderControl(context: ComponentFramework.Context<IInputs>): void {
-    this.context = context;
-    this.uploadProps = {
-      context: context,
-      entityPrimaryFieldLogicalName: this.context.parameters.entityPrimaryFieldLogicalName.raw ?? "",
-      loginHint: this.context.userSettings.userName.toLowerCase() ?? "",
-      useRelationship: this.context.parameters.useRelationship.raw === "true",
-      relationshipLogicalName: this.context.parameters.relationshipFieldLogicalName.raw ?? "",
-      relationshipPrimaryFieldLogicalName: this.context.parameters.relathioshipPrimaryFieldLogicalName.raw ?? "",
-      clientId: this.context.parameters.controlClientId.raw ?? "",
-      controlToRefresh: this.context.parameters.boundEntityField.raw,
-      sharePointSiteId: this.context.parameters.sharePointSiteGuid.raw ?? "",
+export class SharePointAttachmentUploadControl extends StandardControlReact<IInputs, IOutputs> {
+  constructor() {
+    super(true);
+    this.renderOnParametersChanged = false;
+    this.initServiceProvider = (serviceProvider): void => {
+      serviceProvider.register(
+        "CdsService",
+        new CdsService(this.context, {
+          sharePointSiteId: this.context.parameters.sharePointSiteGuid.raw ?? "",
+          useRelationship: this.context.parameters.useRelationship.raw === "true",
+          //@ts-ignore
+          entityId: this.context.mode.contextInfo.entityId,
+          //@ts-ignore
+          entityName: this.context.mode.contextInfo.entityTypeName,
+          primaryEntityFieldLogicalName: this.context.parameters.primaryEntityFieldLogicalName.raw ?? "",
+          relationshipLogicalName: this.context.parameters.relationshipLogicalName.raw ?? undefined,
+          parentEntityTypeName: this.context.parameters.parentEntityTypeName.raw ?? undefined,
+        }),
+      );
+      serviceProvider.register(
+        "SharePointService",
+        new SharePointService(this.context, {
+          sharePointStructureEntity: this.context.parameters.parentEntityTypeName.raw ?? "",
+          sharepointSiteId: this.context.parameters.sharePointSiteGuid.raw ?? "",
+          clientId: this.context.parameters.clientId.raw ?? "",
+        }),
+      );
+      serviceProvider.register("ViewModel", new SharePointUploadControlVM(serviceProvider));
     };
-
-    ReactDOM.render(React.createElement(SharePointAttachmentUploadControl, this.uploadProps), this.container);
-  }
-
-  /**
-   * It is called by the framework prior to a control receiving new data.
-   * @returns an object based on nomenclature defined in manifest, expecting object[s] for property marked as “bound” or “output”
-   */
-  public getOutputs(): IOutputs {
-    return {};
-  }
-
-  /**
-   * Called when the control is to be removed from the DOM tree. Controls should use this call for cleanup.
-   * i.e. cancelling any pending remote calls, removing listeners, etc.
-   */
-  public destroy(): void {
-    ReactDOM.unmountComponentAtNode(this.container);
+    this.reactCreateElement = (container, width, height, serviceProvider): void => {
+      ReactDOM.render(
+        React.createElement(SharePointUploadControl, {
+          serviceProvider: serviceProvider,
+          controlWidth: width,
+          controlHeight: height,
+        }),
+        container,
+      );
+    };
   }
 }
