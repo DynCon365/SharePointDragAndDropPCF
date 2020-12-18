@@ -8,7 +8,7 @@
   <Import Project="$(PowerAppsTargetsPath)\Microsoft.PowerApps.VisualStudio.Solution.props" Condition="Exists('$(PowerAppsTargetsPath)\Microsoft.PowerApps.VisualStudio.Solution.props')" />
 
   <PropertyGroup>
-    <ProjectGuid>795d7cfc-0398-404b-aeed-ad0d2adb041e</ProjectGuid>
+    <ProjectGuid>9e461cbf-98f0-4cdb-a690-53c6c52be8de</ProjectGuid>
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <!--Remove TargetFramework when this is available in 16.1-->
     <TargetFramework>net462</TargetFramework>
@@ -37,10 +37,13 @@
   
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)\**" Exclude="@(ExcludeDirectories)" />
+    <Content Include="$(SolutionPackageZipFilePath)">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   
   <ItemGroup>
-    <ProjectReference Include="c:\CRM\Development\SharePointDragAndDropPCF\SharePointUploadControl.pcfproj" />
+    <ProjectReference Include="..\..\..\..\crm\development\SharePointDragAndDropPCF\SharePointUploadControl.pcfproj" />
   </ItemGroup>
 
   <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" />

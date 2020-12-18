@@ -39,7 +39,7 @@ export class PnPFetchClient extends BearerTokenFetchClient {
     return "";
   }
 
-  private requiresInteraction(errorCode: string) {
+  private requiresInteraction(errorCode: string): boolean {
     if (!errorCode || !errorCode.length) {
       return false;
     }
