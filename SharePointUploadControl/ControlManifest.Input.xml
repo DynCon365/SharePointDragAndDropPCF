@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <manifest>
-  <control namespace="DynamicConsulting" constructor="SharePointAttachmentUploadControl" version="2.0.1" display-name-key="SharePointUploadControl" description-key="A control to drag and drop files and upload to the entity SharePoint library folder." control-type="standard" preview-image="img/preview.png">
+  <control namespace="DynamicConsulting" constructor="SharePointAttachmentUploadControl" version="2.0.5" display-name-key="SharePointUploadControl" description-key="A control to drag and drop files and upload to the entity SharePoint library folder." control-type="standard" preview-image="img/preview.png">
     <!-- property node identifies a specific, configurable piece of data that the control expects from CDS -->   
     <type-group name="fieldTypes">
       <type>SingleLine.Text</type>

@@ -90,6 +90,7 @@ export class SharePointUploadControlVM {
     //Example: /sites/Dynamics/lead/Fabrikam_Guid
 
     if (
+      this.cdsService.config.useRelationship === false ||
       sharePointStructureEntity.toLocaleLowerCase() === "none" ||
       sharePointStructureEntity === undefined ||
       sharePointStructureEntity === "" ||
