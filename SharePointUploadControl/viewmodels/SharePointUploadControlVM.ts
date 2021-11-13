@@ -196,6 +196,8 @@ export class SharePointUploadControlVM {
   }
 
   getSharePointFolderName = (input: string): string => {
+    if (input == null)
+      return "";
     const formattedFolderName = input.replace(/[~.{}|&;$%@"?#<>+]/g, "-");
     return formattedFolderName;
   };
